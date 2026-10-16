@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 namespace Library
 {
     public class Member
@@ -6,7 +9,7 @@ namespace Library
         private int memberId;
         private string name;
         private string address;
-        private string phone;
+        private int phone;
 
         // Public properties
         public int MemberId
@@ -31,7 +34,7 @@ namespace Library
             set
             {
                 // Ensure name does not contain any numbers
-                if (!value.Any(char.IsDigit) && value != "")
+                if (!string.IsNullOrEmpty(value) && !value.Any(char.IsDigit))
                 {
                     name = value;
                 }
@@ -48,31 +51,44 @@ namespace Library
 
             set
             {
-                // Ensure name does not contain any numbers
-                if (!value.Any(char.IsDigit) && value != "")
+                // Ensure address is not blank
+                if (!string.IsNullOrEmpty(value))
                 {
                     address = value;
                 }
                 else
                 {
-                    Console.WriteLine("Error: Member address cannot be blank or contain numbers.");
+                    Console.WriteLine("Error: Member address cannot be blank.");
                 }
             }
         }
 
-        public string Phone
+        // Phone stored as int; setter validates numeric constraints (digit count etc.)
+        public int Phone
         {
             get { return phone; }
-            set { phone = value; }
+            set
+            {
+                // Validate non-negative
+                if (value < 0)
+                { 
+                    Console.WriteLine("Error: Member phone must be non-negative."); 
+                }
+                if((value.ToString().Length < 7 || value.ToString().Length > 10))
+                {
+                    Console.WriteLine("Error: Member phone must contain between 7 and 10 digits.");
+                }
+                phone = value;
+            }
         }
 
-        // Constructor using standard C# casing conventions
-        public Member(int memberId, string memberName, string memberAddress, string memberPhone)
+        // Constructor using camel case conventions
+        public Member(int memberId, string memberName, string memberAddress, int memberPhone)
         {
-            this.MemberId = memberId;
-            this.Name = memberName;
-            this.Address = memberAddress;
-            this.Phone = memberPhone;
+            MemberId = memberId;
+            Name = memberName;
+            Address = memberAddress;
+            Phone = memberPhone;
         }
 
         // Method to display information about a member
